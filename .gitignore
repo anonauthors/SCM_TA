@@ -1,0 +1,6 @@
+*.metadata
+*.recommenders
+*.class
+.metadata/
+SCM_TA/results/
+SCM_TA/archives/
