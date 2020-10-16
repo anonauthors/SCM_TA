@@ -220,7 +220,6 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		
 		return numOfDevsInCommon;
 	}
-		
 	
 }
 

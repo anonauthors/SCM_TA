@@ -50,7 +50,6 @@ import org.apache.commons.math3.filter.KalmanFilter;
 
 import org.apache.log4j.BasicConfigurator;
 
-
 import com.opencsv.CSVWriter;
 
 public class Assignment {
@@ -86,6 +85,29 @@ public class Assignment {
 		System.out.println("Token:");
 		String token = sc.next();
 		
+		
+		/*
+		config = DbxRequestConfig.newBuilder("b1").build();
+		client = new DbxClientV2(config, token);
+		
+		try {
+			 account = client.users().getCurrentAccount();
+		} catch (DbxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(account.getName().getDisplayName());
+		FileMetadata metadata = null;
+		try (InputStream in = new FileInputStream(System.getProperty("user.dir") + File.separator + "src" + File.separator + "temp.txt")) {
+		    //FileMetadata metadata = client.files().uploadBuilder("/pom.xml").uploadAndFinish(in);
+		     metadata = client.files().uploadBuilder("/2019/finalResults/KRRGZ/temp.txt")
+	                //.withMode(WriteMode.ADD)
+	                .uploadAndFinish(in);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.exit(1);
+		}
+		*/
 		String mode = "running";
 		if(mode == "running"){
 			runExperiment();
@@ -423,8 +445,8 @@ public class Assignment {
 			}
 			b.getValue().setTopo();
 		}
-		GA_Problem_Parameter.population = 500;
-		GA_Problem_Parameter.evaluation = 250000;
+		GA_Problem_Parameter.population = 1;
+		GA_Problem_Parameter.evaluation = 1;
 		
 	}
 	
@@ -437,7 +459,7 @@ public class Assignment {
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 	    Instrumenter instrumenter_NSGAIIITA = new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_RS = new Instrumenter().withProblem("KRRGZCompetenceMulti2_original").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+	    Instrumenter instrumenter_RS = new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    
@@ -450,23 +472,19 @@ public class Assignment {
 			System.out.println("finished NSGAIITAGLS in: " + du_SD + " nano second");
 	    
 	    	GA_Problem_Parameter.flag=1;
-	    	//NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
-	    	//		.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(GA_Problem_Parameter.evaluation)
-	    	//		.withInstrumenter(instrumenter_RS).run();
-			NondominatedPopulation NDP_RS=new Executor().withProblemClass(PE.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_RS).run();
-	    	
-	    	
+	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
+	    			.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(GA_Problem_Parameter.evaluation)
+	    			.withInstrumenter(instrumenter_RS).run();	
+
 	    	System.out.println("finished RS");
 	    	
 	    	GA_Problem_Parameter.flag=1;
 	    	long st_KRRGZ = System.nanoTime();
-			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(PE.class).withAlgorithm("NSGAII")
+			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_KRRGZ).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_KRRGZ).run();
 			long du_KRRGZ = System.nanoTime() - st_KRRGZ;
-			long diff_time = du_KRRGZ - du_SD;
+			
 	    	
 			System.out.println("finished KRRGZ in: " + du_KRRGZ + " nano second");
 			
@@ -555,15 +573,18 @@ public class Assignment {
 		    
 		    //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
-		    try{
-			    analyzer.add("KRRGZ", NDP_KRRGZ);
-			    analyzer.add("NSGAIIITAGLS", NDP_SD);
-		    	analyzer.add("RS", NDP_RS);
-		    }
-		    catch(Exception e){
-		    	starting(fileNum, runNum);
-		    	return;
-		    }
+		    //---start commenting---
+		    
+		    //try{
+			//    analyzer.add("KRRGZ", NDP_KRRGZ);
+			//   analyzer.add("NSGAIIITAGLS", NDP_SD);
+		    //	analyzer.add("RS", NDP_RS);
+		    //}
+		    //catch(Exception e){
+		    //	starting(fileNum, runNum);
+		    //	return;
+		    //}
+		    //----end commenting----
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
@@ -585,18 +606,6 @@ public class Assignment {
 			finally{
 				ps_ID.close();
 			}
-			
-			File file_time_diff = new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName
-					+ File.separator + "time_diff" + File.separator + fileName + File.separator +runNum+ File.separator + "time_diff.csv");
-		    file_time_diff.getParentFile().mkdirs();
-			PrintStream ps_time_diff=new PrintStream(file_time_diff);
-			try {
-				ps_time_diff.append(Long.toString(diff_time));
-			}
-			finally {
-				ps_time_diff.close();
-			}
-			
 			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 			File f_analyzer=new File(System.getProperty("user.dir")+File.separator+"results_CoreDevs"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults");
 			f_analyzer.getParentFile().mkdirs();
@@ -607,7 +616,6 @@ public class Assignment {
 			HashMap<String, NondominatedPopulation> approaches = new HashMap<String, NondominatedPopulation>();
 			approaches.put("KRRGZ", NDP_KRRGZ);
 			approaches.put("SD", NDP_SD);
-			approaches.put("RS", NDP_RS);
 			sortedByDep_zones = getSoertedZoneList();
 			for (int q = 0; q < sortedByDep_zones.size(); q++) {
 				header[q + 2] = sortedByDep_zones.get(q).zName;
@@ -616,7 +624,7 @@ public class Assignment {
 			int solutionNumber;
 			for (Map.Entry<String, NondominatedPopulation> approach : approaches.entrySet()) {
 				solutionNumber = 1;
-				File paretoFront = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
+				File paretoFront = new File(System.getProperty("user.dir") + File.separator + "GT" + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
 						+ approach.getKey() + File.separator + fileName + File.separator + runNum + File.separator + "paretoFronts.csv");
 			    paretoFront.getParentFile().mkdirs();
 				PrintWriter pw_paretoFronts=new PrintWriter(paretoFront);
@@ -625,7 +633,7 @@ public class Assignment {
 				for (Solution solution : approach.getValue()) {
 					csvWriter_paretos.writeNext(new String[] {Integer.toString(solutionNumber), Double.toString(solution.getObjective(0)), 
 							Double.toString(solution.getObjective(1))});
-					File sortedAsgmt = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
+					File sortedAsgmt = new File(System.getProperty("user.dir") + File.separator + "GT" + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
 							+ approach.getKey() + File.separator + fileName + File.separator + runNum + File.separator + solutionNumber + ".csv");
 					solutionNumber++;
 				    sortedAsgmt.getParentFile().mkdirs();

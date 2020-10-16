@@ -21,7 +21,7 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
 
-public class PE extends AbstractProblem {
+public class KRRGZCompetenceMulti2_original extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -30,7 +30,7 @@ public class PE extends AbstractProblem {
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	Random r = new Random();
-	public PE(){
+	public KRRGZCompetenceMulti2_original(){
 		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
@@ -39,8 +39,7 @@ public class PE extends AbstractProblem {
 		bugs=GA_Problem_Parameter.bugs;
 		DEP=GA_Problem_Parameter.DEP;
 		GA_Problem_Parameter g=new GA_Problem_Parameter();
-		//tso= GA_Problem_Parameter.tso_competenceMulti2;
-		tso= GA_Problem_Parameter.tso_RS;
+		tso= GA_Problem_Parameter.tso_competenceMulti2;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
@@ -69,13 +68,13 @@ public class PE extends AbstractProblem {
 			GA_Problem_Parameter.flag=0;
 		}
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
-		int min=GA_Problem_Parameter.getMinIdofDeveloper();
-		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
+		int rand=r.nextInt(GA_Problem_Parameter.listOfdevs.length);
+		int var=GA_Problem_Parameter.listOfdevs[rand];
 		int j=0;
 		for(Zone z:genes){
 			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
 			//r.randomize();
-			solution.setVariable(j,EncodingUtils.newInt(min, max));
+			solution.setVariable(j,EncodingUtils.newInt(var, var));
 			j++;
 		}
 		return solution;
@@ -138,12 +137,8 @@ public class PE extends AbstractProblem {
 		
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
-		
-		if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations() % 50000 == 0)
-			System.out.println("KRRGZ_original: " + GA_Problem_Parameter.algorithm.getNumberOfEvaluations());
-		
-		solution.setAssingees(zoneAssignee);
 	}
+		
 	
 }
 

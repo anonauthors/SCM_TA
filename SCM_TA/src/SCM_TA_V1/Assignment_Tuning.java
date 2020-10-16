@@ -41,8 +41,6 @@ import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.BasicConfigurator;
-import org.jppf.client.JPPFClient;
-import org.jppf.client.concurrent.JPPFExecutorService;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 
