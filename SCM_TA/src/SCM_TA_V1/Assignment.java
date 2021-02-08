@@ -63,16 +63,16 @@ public class Assignment {
 	
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		Scanner sc=new Scanner(System.in);
-		System.out.println("please insert the number of desired schedules:");
-		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
+		//System.out.println("please insert the number of desired schedules:");
+		//GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
 		System.out.println("Specify the name of your project:");
-		GA_Problem_Parameter.pName=sc.next();
+		GA_Problem_Parameter.pName = sc.next();
 		System.out.println("The file number you want to launch the run from:");
-		GA_Problem_Parameter.fileNum=sc.nextInt();
+		GA_Problem_Parameter.fileNum = sc.nextInt();
 		System.out.println("The run number you want to launch the run from:");
-		GA_Problem_Parameter.runNum=sc.nextInt();
-		String mode="running";
-		if(mode=="running"){
+		GA_Problem_Parameter.runNum = sc.nextInt();
+		String mode = "running";
+		if(mode == "running"){
 			runExperiment();
 		}
 		else if (mode=="representatoin"){

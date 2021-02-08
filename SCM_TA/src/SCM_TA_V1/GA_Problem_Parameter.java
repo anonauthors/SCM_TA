@@ -70,7 +70,7 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
 	public static int globalIndex=0;
-	public static int numOfEvaluationLocalSearch;
+	public static int numOfEvaluationLocalSearch = 0;
 	public static ArrayList<ArrayList<Integer>> encodedSolutions= new ArrayList<ArrayList<Integer>>();
 	public static int thresoldForPopulationGeneration=0;
 	public static String pName=null;
