@@ -8,6 +8,6 @@ The only thing is needed to run the code is cloning the appropriate *branch* in 
 
 In order to run the experiments, please go through following steps:
 
-I. You could try to run the code from the terminal (CMD in windows) or using an IDE (we suggest eclipse in this regard).<br/>
-II. You just need to compile the provided code in SCM_TA-V1 package (in src dir), and then run the **Assignment** class which contains the main method.<br/>
-III. The results at the end will be located in the appropriate dirs (which is the *result* folder).
+I. You could try to run the code from the terminal (CMD in windows) or using an IDE (we suggest *eclipse* in this regard since there are code dependencies (to jgrahpt and MOEAFramework) that is better to be handeld by an IDE).<br/>
+II. You just need to compile the provided code in SCM_TA-V1 package (in src dir), and then run the **Assignment** class which contains the main method. Once the code gets run, the application asks for the name of project (JDT or Platform), file number (one of the snapshots) and, etc. <br/>
+III. In the end, results will be located in the appropriate dirs (which is the *result* folder).
